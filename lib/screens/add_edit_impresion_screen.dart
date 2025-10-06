@@ -24,6 +24,8 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
 
   Impresora? _selectedImpresora;
   Filamento? _selectedFilamento;
+  Impresora? _impresora;
+  Filamento? _filamento;
   List<Impresora> _impresoras = [];
   List<Filamento> _filamentos = [];
 
@@ -33,9 +35,10 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     _loadData();
 
     if (widget.impresion != null) {
+
       final i = widget.impresion!;
-      _selectedImpresora = null;
-      _selectedFilamento = null;
+       _selectedImpresora = _impresora;
+       _selectedFilamento = _filamento;
       nombreCtrl.text = i.nombre;
       pesoCtrl.text = i.peso.toString();
       tiempoCtrl.text = i.tiempo.toString();
@@ -47,9 +50,14 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     final db = DatabaseHelper.instance;
     final impresoras = await db.getImpresoras();
     final filamentos = await db.getFilamentos();
+    final impresora = await db.getImpresora(widget.impresion?.impresoraId.toString() ?? '');
+    final filamento = await db.getFilamento(widget.impresion?.filamentoId.toString() ?? '');
+
     setState(() {
       _impresoras = impresoras;
       _filamentos = filamentos;
+      _impresora = impresora;
+      _filamento = filamento;
     });
   }
 
@@ -65,8 +73,8 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     final nueva = Impresion(
       id: widget.impresion?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       nombre: nombreCtrl.text,
-      impresora: _selectedImpresora!.id,
-      filamento: _selectedFilamento!.id,
+      impresoraId: _selectedImpresora!.id.toString(),
+      filamentoId: _selectedFilamento!.id.toString(),
       peso: double.tryParse(pesoCtrl.text) ?? 0,
       tiempo: Duration(minutes: int.tryParse(tiempoCtrl.text) ?? 0),
       fecha: fechaCtrl.text.isNotEmpty

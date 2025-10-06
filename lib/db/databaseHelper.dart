@@ -71,8 +71,8 @@ class DatabaseHelper {
       CREATE TABLE impresiones (
         id TEXT PRIMARY KEY,
         nombre TEXT NOT NULL,
-        impresora TEXT NOT NULL,
-        filamento TEXT NOT NULL,
+        impresoraId TEXT NOT NULL,
+        filamentoId TEXT NOT NULL,
         peso DECIMAL(6,2) NOT NULL,
         tiempo REAL NOT NULL,
         fecha DATE NOT NULL
@@ -97,6 +97,16 @@ class DatabaseHelper {
     return result.map((json) => Impresora.fromJson(json)).toList();
   }
 
+  Future<Impresora?> getImpresora(String id) async {
+    final db = await instance.database;
+    final result = await db.query('impresoras', where: 'id = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return Impresora.fromJson(result.first);
+    }
+    return null;
+  }
+
+
   // Eliminar una impresora
   Future<int> deleteImpresora(String id) async {
     final db = await instance.database;
@@ -111,14 +121,11 @@ class DatabaseHelper {
   /***    IMPRESIONES    ***/
 
   // Insertar impresion
-  Future<void> insertImpresion(Impresion impresion) async {
+  Future<int> insertImpresion(Impresion impresion) async {
     final db = await instance.database;
-    await db.insert(
-      'impresiones',
-      impresion.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    return await db.insert('impresiones', impresion.toJson());
   }
+
 
   Future<Impresion?> getImpresion(String id) async {
     final db = await instance.database;
@@ -173,6 +180,16 @@ class DatabaseHelper {
     final result = await db.query('filamentos');
     return result.map((json) => Filamento.fromJson(json)).toList();
   }
+
+  Future<Filamento?> getFilamento(String id) async {
+    final db = await instance.database;
+    final result = await db.query('filamentos', where: 'id = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return Filamento.fromJson(result.first);
+    }
+    return null;
+  }
+
 
   // Eliminar una impresion
   Future<int> deleteFilamento(String id) async {

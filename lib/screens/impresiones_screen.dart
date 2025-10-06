@@ -67,7 +67,7 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteImpresion(i.id),
+                    onPressed: () => _deleteImpresion(i.id.toString()),
                   ),
                 ],
               ),
