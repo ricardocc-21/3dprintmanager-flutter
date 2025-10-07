@@ -260,7 +260,7 @@ class DatabaseHelper {
       );
     } else {
       // 🔹 No existe → inserta
-      await db.insert('impresoras', filamento.toJson());
+      await db.insert('filamentos', filamento.toJson());
     }
   }
 

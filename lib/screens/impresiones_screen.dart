@@ -82,11 +82,13 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _goToAddImpresion(),
-        child: const Icon(Icons.add),
-        backgroundColor: AppColors.primary,
-      ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _goToAddImpresion(),
+          backgroundColor: AppColors.secondary,
+          shape: const CircleBorder(), // asegura que sea circular
+          mini: false,
+          child: const Icon(Icons.add, size: 32), // si quieres un botón más pequeño, pon true
+        )
     );
   }
 }

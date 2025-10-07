@@ -106,7 +106,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.impresion == null ? 'Añadir Impresión' : 'Editar Impresión'),
-        backgroundColor: AppColors.backgroundComponent,
+        // backgroundColor: AppColors.backgroundComponent,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _guardar,

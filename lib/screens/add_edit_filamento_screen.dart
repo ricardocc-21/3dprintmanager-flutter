@@ -74,7 +74,7 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.filamento == null ? 'Añadir Filamento' : 'Editar Filamento'),
-        backgroundColor: AppColors.backgroundComponent,
+        // backgroundColor: AppColors.backgroundComponent,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _guardar,
@@ -169,7 +169,7 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
           return null;
         },
         decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.calendar_today, color: Colors.deepPurple),
+          prefixIcon: const Icon(Icons.calendar_today, color: Colors.deepOrange),
           labelText: 'Fecha de compra',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),

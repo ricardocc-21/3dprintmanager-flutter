@@ -75,11 +75,13 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _goToAddFilamento(),
-        child: const Icon(Icons.add),
-        backgroundColor: AppColors.primary,
-      ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _goToAddFilamento(),
+          backgroundColor: AppColors.secondary,
+          shape: const CircleBorder(), // asegura que sea circular
+          mini: false,
+          child: const Icon(Icons.add, size: 32), // si quieres un botón más pequeño, pon true
+        )
     );
   }
 }

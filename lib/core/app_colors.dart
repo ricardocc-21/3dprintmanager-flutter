@@ -1,12 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF1976D2); // Azul profesional
-  static const Color secondary = Color(0xFF424242); // Gris oscuro elegante
-  static const Color accent = Color(0xFFFFA000); // Ámbar para resaltar
+  // Fondos
+  static const Color background = Color(0xFFF5F5F5);       // Fondo principal de la app
+  static const Color backgroundCard = Color(0xFFE0E0E0);   // Tarjetas, contenedores
+  static const Color canvas = Color(0xFFF5F5F5);           // Drawer, BottomSheet, etc.
 
-  static const Color background = Color(0xFFF5F5F5); // Gris claro (fondo)
-  static const Color backgroundComponent = Color(0xFFFFFFFF); // Blanco (cards, componentes)
-  static const Color backgroundComponentSelected = Color(0xFFE3F2FD); // Azul muy suave
+  // Textos
+  static const Color textPrimary = Color(0xFF212121);      // Texto principal
+  static const Color textSecondary = Color(0xFF757575);    // Subtítulos, hints
+
+  // Colores de acento / botones
+  static const Color primary = Color(0xFF2196F3);          // Botones principales, AppBar, FAB
+  static const Color secondary = Color(0xFFFF9800);        // Acciones destacadas, iconos
+  static const Color success = Color(0xFF4CAF50);          // Mensajes de éxito
+  static const Color error = Color(0xFFF44336);            // Mensajes de error
+  static const Color warning = Color(0xFFFFC107);          // Advertencias
 }
 
