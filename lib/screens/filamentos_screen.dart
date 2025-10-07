@@ -53,24 +53,90 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
         itemBuilder: (context, index) {
           final f = filamentos[index];
           return Card(
-            margin: const EdgeInsets.all(8),
-            elevation: 4,
-            child: ListTile(
-              title: Text("${f.marca} - ${f.color}"),
-              subtitle: Text("Precio: ${f.precio.toStringAsFixed(2)}€ - Restante: ${f.restante}g"),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _goToAddFilamento(f),
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 3,
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              children: [
+                Image.network(
+                  f.enlace_imagen,
+                  height: 140,
+                  width: 140,
+                  fit: BoxFit.cover,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${f.marca} ${f.color}',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
+                              ),
+                            ),
+                            PopupMenuButton<String>(
+                              icon: const Icon(Icons.more_vert),
+                              onSelected: (value) {
+                                if (value == 'edit') {
+                                  _goToAddFilamento(f); // tu metodo
+                                } else if (value == 'delete') {
+                                  _deleteFilamento(f.id); // tu metodo
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 'edit',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.edit, color: Colors.blue),
+                                      SizedBox(width: 8),
+                                      Text('Editar'),
+                                    ],
+                                  ),
+                                ),
+                                const PopupMenuItem(
+                                  value: 'delete',
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.delete, color: Colors.red),
+                                      SizedBox(width: 8),
+                                      Text('Eliminar'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(f.material.toUpperCase(), style: TextStyle(color: Colors.grey[700], fontSize: 16)),
+                        const SizedBox(height: 4),
+                        Text('Última impresión: 05/10/2025', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            const Icon(Icons.access_time, color: Colors.blue, size: 20),
+                            const SizedBox(width: 6),
+                            Text('En uso', style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteFilamento(f.id),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

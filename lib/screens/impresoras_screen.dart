@@ -103,7 +103,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                 Image.asset(
                   'assets/images/ender3.png',
                   height: 160,
-                  width: 140,
+                  width: 160,
                   fit: BoxFit.cover,
                 ),
                 Expanded(
@@ -116,20 +116,24 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${imp.marca} ${imp.modelo}',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Text(
+                                '${imp.marca} ${imp.modelo}',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.clip,
+                                maxLines: 1,
                               ),
                             ),
                             PopupMenuButton<String>(
                               icon: const Icon(Icons.more_vert),
                               onSelected: (value) {
                                 if (value == 'edit') {
-                                  _addOrEditImpresora(); // tu método
+                                  _addOrEditImpresora(); // tu metodo
                                 } else if (value == 'delete') {
-                                  _deleteImpresora(imp.id); // tu método
+                                  _deleteImpresora(imp.id); // tu metodo
                                 }
                               },
                               itemBuilder: (context) => [
@@ -158,7 +162,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text('Horas totales: ${imp.horasUso/60}', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
+                        Text('Horas totales: ${imp.horasUso/60}h', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
                         const SizedBox(height: 4),
                         Text('Última impresión: 05/10/2025', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
                         const SizedBox(height: 12),
