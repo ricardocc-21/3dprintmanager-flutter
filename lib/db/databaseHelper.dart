@@ -126,7 +126,7 @@ class DatabaseHelper {
     return await db.insert('impresiones', impresion.toJson());
   }
 
-
+  // Obtener una impresion
   Future<Impresion?> getImpresion(String id) async {
     final db = await instance.database;
 

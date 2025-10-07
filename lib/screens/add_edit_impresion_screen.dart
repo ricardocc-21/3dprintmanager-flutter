@@ -50,14 +50,27 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     final db = DatabaseHelper.instance;
     final impresoras = await db.getImpresoras();
     final filamentos = await db.getFilamentos();
-    final impresora = await db.getImpresora(widget.impresion?.impresoraId.toString() ?? '');
-    final filamento = await db.getFilamento(widget.impresion?.filamentoId.toString() ?? '');
+
+    Impresora? impresoraSeleccionada;
+    Filamento? filamentoSeleccionado;
+
+    // Si estás editando, busca los objetos correspondientes
+    if (widget.impresion != null) {
+      impresoraSeleccionada = impresoras.firstWhere(
+            (i) => i.id.toString() == widget.impresion!.impresoraId,
+        orElse: () => impresoras.isNotEmpty ? impresoras.first : null as Impresora,
+      );
+      filamentoSeleccionado = filamentos.firstWhere(
+            (f) => f.id.toString() == widget.impresion!.filamentoId,
+        orElse: () => filamentos.isNotEmpty ? filamentos.first : null as Filamento,
+      );
+    }
 
     setState(() {
       _impresoras = impresoras;
       _filamentos = filamentos;
-      _impresora = impresora;
-      _filamento = filamento;
+      _selectedImpresora = impresoraSeleccionada;
+      _selectedFilamento = filamentoSeleccionado;
     });
   }
 
