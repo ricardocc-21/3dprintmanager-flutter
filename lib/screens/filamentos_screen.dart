@@ -35,7 +35,9 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
   void _goToAddFilamento([Filamento? filamento]) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => AddEditFilamentoScreen(filamento: filamento)),
+      MaterialPageRoute(
+        builder: (_) => AddEditFilamentoScreen(filamento: filamento),
+      ),
     );
     if (result != null) {
       await DatabaseHelper.instance.insertFilamento(result);
@@ -49,105 +51,148 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
       body: filamentos.isEmpty
           ? const Center(child: Text("No hay filamentos registrados"))
           : ListView.builder(
-        itemCount: filamentos.length,
-        itemBuilder: (context, index) {
-          final f = filamentos[index];
-          return Card(
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 3,
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              children: [
-                Image.network(
-                  f.enlace_imagen,
-                  height: 140,
-                  width: 140,
-                  fit: BoxFit.cover,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${f.marca} ${f.color}',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                overflow: TextOverflow.clip,
-                                maxLines: 1,
-                              ),
-                            ),
-                            PopupMenuButton<String>(
-                              icon: const Icon(Icons.more_vert),
-                              onSelected: (value) {
-                                if (value == 'edit') {
-                                  _goToAddFilamento(f); // tu metodo
-                                } else if (value == 'delete') {
-                                  _deleteFilamento(f.id); // tu metodo
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                const PopupMenuItem(
-                                  value: 'edit',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.edit, color: Colors.blue),
-                                      SizedBox(width: 8),
-                                      Text('Editar'),
-                                    ],
-                                  ),
-                                ),
-                                const PopupMenuItem(
-                                  value: 'delete',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.delete, color: Colors.red),
-                                      SizedBox(width: 8),
-                                      Text('Eliminar'),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(f.material.toUpperCase(), style: TextStyle(color: Colors.grey[700], fontSize: 16)),
-                        const SizedBox(height: 4),
-                        Text('Última impresión: 05/10/2025', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            const Icon(Icons.access_time, color: Colors.blue, size: 20),
-                            const SizedBox(width: 6),
-                            Text('En uso', style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                      ],
-                    ),
+              itemCount: filamentos.length,
+              itemBuilder: (context, index) {
+                final f = filamentos[index];
+                return Card(
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ),
-              ],
+                  elevation: 3,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Image.network(
+                        f.enlace_imagen,
+                        height: 140,
+                        width: 140,
+                        fit: BoxFit.cover,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '${f.marca} ${f.color}',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.clip,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  PopupMenuButton<String>(
+                                    icon: const Icon(Icons.more_vert),
+                                    onSelected: (value) {
+                                      if (value == 'edit') {
+                                        _goToAddFilamento(f); // tu metodo
+                                      } else if (value == 'delete') {
+                                        _deleteFilamento(f.id); // tu metodo
+                                      }
+                                    },
+                                    itemBuilder: (context) => [
+                                      const PopupMenuItem(
+                                        value: 'edit',
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.edit,
+                                              color: Colors.blue,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text('Editar'),
+                                          ],
+                                        ),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'delete',
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text('Eliminar'),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                f.material.toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${f.precio_kg}€/kg',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Disponible: ${f.restante}g',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              LinearProgressIndicator(
+                                value: (100 - f.porcentaje_usado)/ 100,
+                                // Convierte a 0–1
+                                minHeight: 10,
+                                backgroundColor: Colors.grey[300],
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  100 - f.porcentaje_usado > 60
+                                      ? Colors.green
+                                      : 100 - f.porcentaje_usado < 25
+                                      ? Colors.red
+                                      : Colors.orange,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _goToAddFilamento(),
+        backgroundColor: AppColors.secondary,
+        shape: const CircleBorder(),
+        // asegura que sea circular
+        mini: false,
+        child: const Icon(
+          Icons.add,
+          size: 32,
+        ), // si quieres un botón más pequeño, pon true
       ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _goToAddFilamento(),
-          backgroundColor: AppColors.secondary,
-          shape: const CircleBorder(), // asegura que sea circular
-          mini: false,
-          child: const Icon(Icons.add, size: 32), // si quieres un botón más pequeño, pon true
-        )
     );
   }
 }
