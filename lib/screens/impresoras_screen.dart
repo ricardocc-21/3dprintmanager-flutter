@@ -96,7 +96,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
             margin: const EdgeInsets.all(8),
             child: ListTile(
               title: Text("${imp.marca} ${imp.modelo}"),
-              subtitle: Text("Horas de uso: ${imp.horasUso.toStringAsFixed(0)}"),
+              subtitle:Text('${(imp.horasUso/60).toStringAsFixed(1)}h'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

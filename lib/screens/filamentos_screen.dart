@@ -57,7 +57,7 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
             elevation: 4,
             child: ListTile(
               title: Text("${f.marca} - ${f.color}"),
-              subtitle: Text("Precio: €${f.precio.toStringAsFixed(2)} - Restante: ${f.restante}g"),
+              subtitle: Text("Precio: ${f.precio.toStringAsFixed(2)}€ - Restante: ${f.restante}g"),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

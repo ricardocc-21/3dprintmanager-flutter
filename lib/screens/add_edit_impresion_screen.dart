@@ -41,7 +41,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
        _selectedFilamento = _filamento;
       nombreCtrl.text = i.nombre;
       pesoCtrl.text = i.peso.toString();
-      tiempoCtrl.text = i.tiempo.toString();
+      tiempoCtrl.text = i.tiempo.inMinutes.toString();
       fechaCtrl.text = DateFormat('dd/MM/yyyy').format(i.fecha);
     }
   }
@@ -96,6 +96,9 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     );
 
     Navigator.pop(context, nueva);
+    DatabaseHelper.instance.calcularUsado(nueva.filamentoId);
+    DatabaseHelper.instance.calcularHoras(nueva.impresoraId);
+
   }
 
   @override

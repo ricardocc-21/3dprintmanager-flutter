@@ -11,10 +11,10 @@ class Filamento {
   final DateTime fecha_compra;
   final String enlace_compra;
   final String enlace_imagen;
-  final double usado;
-  final double restante;
+  double usado;
+  double restante;
   final double disponible;
-  final double porcentaje_usado;
+  double porcentaje_usado;
 
 
   Filamento({

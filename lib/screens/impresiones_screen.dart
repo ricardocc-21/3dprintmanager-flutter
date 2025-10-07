@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:print_manager/db/DatabaseHelper.dart';
 import 'package:print_manager/models/impresion.dart';
 import '../core/app_colors.dart';
+import '../models/filamento.dart';
 import 'add_edit_impresion_screen.dart';
 
 class ImpresionesScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class ImpresionesScreen extends StatefulWidget {
 
 class _ImpresionesScreenState extends State<ImpresionesScreen> {
   List<Impresion> impresiones = [];
+  List<Filamento> filamentos = [];
 
   @override
   void initState() {
@@ -21,9 +23,12 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
   }
 
   Future<void> _loadImpresiones() async {
-    final data = await DatabaseHelper.instance.getImpresiones();
+    final _impresiones = await DatabaseHelper.instance.getImpresiones();
+    final _filamentos = await DatabaseHelper.instance.getFilamentos();
+
     setState(() {
-      impresiones = data;
+      impresiones = _impresiones;
+      filamentos = _filamentos;
     });
   }
 
@@ -52,12 +57,14 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
         itemCount: impresiones.length,
         itemBuilder: (context, index) {
           final i = impresiones[index];
+          final f = filamentos.firstWhere((f) => f.id == i.filamentoId);
           return Card(
             margin: const EdgeInsets.all(8),
             elevation: 4,
             child: ListTile(
-              title: Text("${i.nombre} - ${i.tiempo}"),
-              subtitle: Text("Subtitulo"),
+              title: Text("${i.nombre}"),
+              subtitle: Text("${f.color} (${i.tiempo.inMinutes} min)"
+            ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

@@ -35,7 +35,7 @@ class Impresion {
       impresoraId: json['impresoraId'],
       filamentoId: json['filamentoId'],
       peso: (json['peso'] as num).toDouble(),
-      tiempo: Duration(seconds: (json['tiempo'] as num).toInt()),
+      tiempo: Duration(minutes: (json['tiempo'] as num).toInt()),
       fecha: DateTime.parse(json['fecha']),
     );
   }
@@ -48,7 +48,7 @@ class Impresion {
       'impresoraId': impresoraId,
       'filamentoId': filamentoId,
       'peso': peso,
-      'tiempo': tiempo.inSeconds,
+      'tiempo': tiempo.inMinutes,
       'fecha': fecha.toIso8601String(),
     };
   }

@@ -81,14 +81,38 @@ class DatabaseHelper {
   }
 /***    IMPRESORAS    ***/
   // Insertar impresora
+  // Future<void> insertImpresora(Impresora impresora) async {
+  //   final db = await instance.database;
+  //   await db.insert(
+  //     'impresoras',
+  //     impresora.toJson(),
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
   Future<void> insertImpresora(Impresora impresora) async {
     final db = await instance.database;
-    await db.insert(
+
+    final existing = await db.query(
       'impresoras',
-      impresora.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'id = ?',
+      whereArgs: [impresora.id],
     );
+
+    if (existing.isNotEmpty) {
+      // 🔹 Ya existe → actualiza
+      await db.update(
+        'impresoras',
+        impresora.toJson(),
+        where: 'id = ?',
+        whereArgs: [impresora.id],
+      );
+    } else {
+      // 🔹 No existe → inserta
+      await db.insert('impresoras', impresora.toJson());
+    }
   }
+
+
 
   // Obtener todas las impresoras
   Future<List<Impresora>> getImpresoras() async {
@@ -118,12 +142,55 @@ class DatabaseHelper {
       );
   }
 
+  Future<void> calcularHoras(String impresoraId) async {
+    final db = await instance.database;
+    final impresora = await getImpresora(impresoraId);
+    final result = await db.rawQuery(
+      'SELECT SUM(tiempo) as totalTiempo FROM impresiones WHERE impresoraId = ?',
+      [impresora?.id],
+    );
+
+    final total = (result.first['totalTiempo'] as num?)?.toDouble() ?? 0.0;
+
+    impresora?.horasUso = total;
+    insertImpresora(impresora!);
+  }
+
   /***    IMPRESIONES    ***/
 
   // Insertar impresion
-  Future<int> insertImpresion(Impresion impresion) async {
+  // Future<int> insertImpresion(Impresion impresion) async {
+  //   try {
+  //     final db = await instance.database;
+  //     return await db.insert('impresiones', impresion.toJson(),conflictAlgorithm: ConflictAlgorithm.rollback);
+  //   } catch (e, stackTrace) {
+  //     print('❌ Error al insertar impresión: $e');
+  //     print(stackTrace); // opcional, muestra la línea exacta del fallo
+  //     return 0;
+  //   }
+  // }
+
+  Future<void> insertImpresion(Impresion impresion) async {
     final db = await instance.database;
-    return await db.insert('impresiones', impresion.toJson());
+
+    final existing = await db.query(
+      'impresiones',
+      where: 'id = ?',
+      whereArgs: [impresion.id],
+    );
+
+    if (existing.isNotEmpty) {
+      // 🔹 Ya existe → actualiza
+      await db.update(
+        'impresiones',
+        impresion.toJson(),
+        where: 'id = ?',
+        whereArgs: [impresion.id],
+      );
+    } else {
+      // 🔹 No existe → inserta
+      await db.insert('impresion', impresion.toJson());
+    }
   }
 
   // Obtener una impresion
@@ -165,22 +232,47 @@ class DatabaseHelper {
   /***    FILAMENTOS    ***/
 
   // Insertar filamento
+  // Future<void> insertFilamento(Filamento filamento) async {
+  //   final db = await instance.database;
+  //   await db.insert(
+  //     'filamentos',
+  //     filamento.toJson(),
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
+
   Future<void> insertFilamento(Filamento filamento) async {
     final db = await instance.database;
-    await db.insert(
+
+    final existing = await db.query(
       'filamentos',
-      filamento.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'id = ?',
+      whereArgs: [filamento.id],
     );
+
+    if (existing.isNotEmpty) {
+      // 🔹 Ya existe → actualiza
+      await db.update(
+        'filamentos',
+        filamento.toJson(),
+        where: 'id = ?',
+        whereArgs: [filamento.id],
+      );
+    } else {
+      // 🔹 No existe → inserta
+      await db.insert('impresoras', filamento.toJson());
+    }
   }
 
-  // Obtener todas las impresion
+
+  // Obtener todos los filamentos
   Future<List<Filamento>> getFilamentos() async {
     final db = await instance.database;
     final result = await db.query('filamentos');
     return result.map((json) => Filamento.fromJson(json)).toList();
   }
 
+  // Obtener un filamento
   Future<Filamento?> getFilamento(String id) async {
     final db = await instance.database;
     final result = await db.query('filamentos', where: 'id = ?', whereArgs: [id]);
@@ -191,7 +283,7 @@ class DatabaseHelper {
   }
 
 
-  // Eliminar una impresion
+  // Eliminar un filamento
   Future<int> deleteFilamento(String id) async {
     final db = await instance.database;
     return await db.delete(
@@ -199,6 +291,22 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<void> calcularUsado(String filamentoId) async {
+    final db = await instance.database;
+    final filamento = await getFilamento(filamentoId);
+    final result = await db.rawQuery(
+      'SELECT SUM(peso) as totalPeso FROM impresiones WHERE filamentoId = ?',
+      [filamento?.id],
+    );
+
+    final total = (result.first['totalPeso'] as num?)?.toDouble() ?? 0.0;
+
+    filamento?.usado = total;
+    filamento?.restante = filamento.peso - total;
+    filamento?.porcentaje_usado = (total / filamento.peso) * 100;
+    insertFilamento(filamento!);
   }
 
 

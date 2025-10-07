@@ -5,7 +5,7 @@ class Impresora {
   final double precio;
   final String descripcion;
   final DateTime fechaCompra;
-  final double horasUso;
+  double horasUso;
 
   Impresora({
     required this.id,
