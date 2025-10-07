@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:print_manager/core/app_colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:print_manager/screens/filamentos_screen.dart';
 import 'package:print_manager/screens/impresiones_screen.dart';
 import 'package:print_manager/screens/impresoras_screen.dart';

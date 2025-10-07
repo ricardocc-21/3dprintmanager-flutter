@@ -40,25 +40,24 @@ class DatabaseHelper {
         id TEXT PRIMARY KEY,
         marca TEXT NOT NULL,
         modelo TEXT NOT NULL,
-        precio REAL NOT NULL,
+        precio REAL NULL,
         descripcion TEXT,
         fecha_compra TEXT NOT NULL,
-        horas_uso REAL NOT NULL
+        horas_uso REAL DEFAULT 0
       )
       ''');
     await db.execute('''
-      
       CREATE TABLE filamentos (
         id TEXT PRIMARY KEY,
         marca TEXT NOT NULL,
-        material TEXT NOT NULL,
-        color TEXT NOT NULL,
-        peso REAL NOT NULL,
-        precio DECIMAL(6,2) NOT NULL,
-        precio_kg DECIMAL(6,2) NOT NULL,
-        diametro DECIMAL(4,2) NOT NULL,
+        material TEXT NULL,
+        color TEXT NULL,
+        peso REAL NULL,
+        precio DECIMAL(6,2) NULL,
+        precio_kg DECIMAL(6,2) NULL,
+        diametro DECIMAL(4,2) NULL,
         descripcion TEXT,
-        fecha_compra TEXT NOT NULL,
+        fecha_compra TEXT NULL,
         enlace_compra TEXT,
         enlace_imagen TEXT,
         usado REAL DEFAULT 0,
@@ -75,9 +74,22 @@ class DatabaseHelper {
         filamentoId TEXT NOT NULL,
         peso DECIMAL(6,2) NOT NULL,
         tiempo REAL NOT NULL,
-        fecha DATE NOT NULL
+        fecha DATE NOT NULL,
+        imagen TEXT NOT NULL
       )
     ''');
+    // Impresora
+    await db.execute('''
+      INSERT INTO impresoras (id, marca, modelo, precio, descripcion, fecha_compra) VALUES ('1', 'Creality','Ender 3 V2 Neo',200,'Description','2025-10-07 15:42:30.123456')
+    ''');
+    // Filamento
+    await db.execute('''
+      INSERT INTO filamentos (id, marca, material, color, peso, precio, precio_kg, diametro, descripcion, fecha_compra, enlace_compra, enlace_imagen) VALUES (1, 'eSUN', 'PLA', 'Azul', 1000, 10, 1, 1, 'descripcion', '2025-10-07 15:42:30.123456', 'asdc', 'imagen1.jpg')
+    ''');
+    // Impresion
+    // await db.execute('''
+    //   INSERT INTO impresiones (id, nombre, impresoraId, filamentoId, peso, tiempo, fecha, imagen) VALUES (1, 'Impresion 1', 1, 1, 100, 60, '2023-01-01', 'imagen1.jpg')
+    // ''');
   }
 /***    IMPRESORAS    ***/
   // Insertar impresora
@@ -189,7 +201,7 @@ class DatabaseHelper {
       );
     } else {
       // 🔹 No existe → inserta
-      await db.insert('impresion', impresion.toJson());
+      await db.insert('impresiones', impresion.toJson());
     }
   }
 

@@ -66,6 +66,7 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                   ),
                   child: Row(
                     children: [
+                      if (!f.enlace_imagen.isEmpty)
                       Image.network(
                         f.enlace_imagen,
                         height: 140,

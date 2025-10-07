@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart' show basename;
+import 'package:path_provider/path_provider.dart';
 import '../core/app_colors.dart';
 import '../models/impresora.dart';
 import '../models/filamento.dart';
@@ -21,6 +26,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
   final pesoCtrl = TextEditingController();
   final tiempoCtrl = TextEditingController();
   final fechaCtrl = TextEditingController();
+  final picker = ImagePicker();
 
   Impresora? _selectedImpresora;
   Filamento? _selectedFilamento;
@@ -43,6 +49,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
       pesoCtrl.text = i.peso.toString();
       tiempoCtrl.text = i.tiempo.inMinutes.toString();
       fechaCtrl.text = DateFormat('dd/MM/yyyy').format(i.fecha);
+      // picker.pickImage(source: ImageSource.camera);
     }
   }
 
@@ -93,6 +100,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
       fecha: fechaCtrl.text.isNotEmpty
           ? DateFormat('dd/MM/yyyy').parse(fechaCtrl.text)
           : DateTime.now(),
+      imagen: widget.impresion?.imagen ?? '',
     );
 
     Navigator.pop(context, nueva);
@@ -140,6 +148,18 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
                   _buildNumberField(pesoCtrl, 'Peso (g)', Icons.scale),
                   _buildNumberField(tiempoCtrl, 'Tiempo (min)', Icons.timer),
                   _buildDateField(),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final imagePath = await takePicture();
+                      if (imagePath != null) {
+                        setState(() {
+                          widget.impresion?.imagen = imagePath;
+                        });
+                      }
+                    },
+                    child: const Text('Tomar Foto'),
+                  ),
                 ],
               ),
             ),
@@ -261,5 +281,20 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
         },
       ),
     );
+  }
+
+  Future<String?> takePicture() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+
+    if (image == null) return null; // el usuario canceló
+
+    // Guarda la imagen en almacenamiento local permanente
+    final Directory appDir = await getApplicationDocumentsDirectory();
+    final String fileName = basename(image.path);
+    final String savedPath = '${appDir.path}/$fileName';
+    final File newImage = await File(image.path).copy(savedPath);
+
+    return newImage.path; // devuelves la ruta local del archivo
   }
 }

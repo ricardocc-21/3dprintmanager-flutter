@@ -9,6 +9,7 @@ class Impresion {
   final double peso;
   final Duration tiempo;
   final DateTime fecha;
+  String imagen;
 
   // Opcional: objetos completos solo si los quieres cargar
   Impresora? impresora;
@@ -22,6 +23,7 @@ class Impresion {
     required this.peso,
     required this.tiempo,
     required this.fecha,
+    required this.imagen,
 
     this.impresora,
     this.filamento,
@@ -37,6 +39,7 @@ class Impresion {
       peso: (json['peso'] as num).toDouble(),
       tiempo: Duration(minutes: (json['tiempo'] as num).toInt()),
       fecha: DateTime.parse(json['fecha']),
+      imagen: json['imagen'] ?? '',
     );
   }
 
@@ -50,6 +53,7 @@ class Impresion {
       'peso': peso,
       'tiempo': tiempo.inMinutes,
       'fecha': fecha.toIso8601String(),
+      'imagen': imagen,
     };
   }
 }
