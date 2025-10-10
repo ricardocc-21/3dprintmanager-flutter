@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:print_manager/db/DatabaseHelper.dart';
 import 'package:print_manager/models/impresion.dart';
-import '../core/app_colors.dart';
-import '../models/filamento.dart';
+import '../../core/app_colors.dart';
+import '../../models/filamento.dart';
 import 'add_edit_impresion_screen.dart';
 
 class ImpresionesScreen extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:print_manager/db/DatabaseHelper.dart';
 import 'package:print_manager/models/filamento.dart';
 import 'add_edit_filamento_screen.dart';
-import '../core/app_colors.dart';
+import '../../core/app_colors.dart';
 
 class FilamentosScreen extends StatefulWidget {
   const FilamentosScreen({super.key});
@@ -66,12 +66,13 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                   ),
                   child: Row(
                     children: [
-                      if (!f.enlace_imagen.isEmpty)
-                      Image.network(
-                        f.enlace_imagen,
-                        height: 140,
-                        width: 140,
-                        fit: BoxFit.cover,
+                      Expanded(
+                        child: Image.network(
+                          f.enlace_imagen,
+                          height: 140,
+                          width: 140,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Expanded(
                         child: Padding(

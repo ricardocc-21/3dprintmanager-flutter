@@ -5,11 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
-import '../core/app_colors.dart';
-import '../models/impresora.dart';
-import '../models/filamento.dart';
-import '../models/impresion.dart';
-import '../db/DatabaseHelper.dart';
+import '../../core/app_colors.dart';
+import '../../models/impresora.dart';
+import '../../models/filamento.dart';
+import '../../models/impresion.dart';
+import '../../db/DatabaseHelper.dart';
 
 class AddEditImpresionScreen extends StatefulWidget {
   final Impresion? impresion;
@@ -28,12 +28,15 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
   final fechaCtrl = TextEditingController();
   final picker = ImagePicker();
 
+
   Impresora? _selectedImpresora;
   Filamento? _selectedFilamento;
   Impresora? _impresora;
   Filamento? _filamento;
   List<Impresora> _impresoras = [];
   List<Filamento> _filamentos = [];
+  File? _imagenSeleccionada;
+
 
   @override
   void initState() {
@@ -49,7 +52,9 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
       pesoCtrl.text = i.peso.toString();
       tiempoCtrl.text = i.tiempo.inMinutes.toString();
       fechaCtrl.text = DateFormat('dd/MM/yyyy').format(i.fecha);
-      // picker.pickImage(source: ImageSource.camera);
+    }
+    if (widget.impresion != null && widget.impresion!.imagen.isNotEmpty) {
+      _imagenSeleccionada = File(widget.impresion!.imagen);
     }
   }
 
@@ -90,6 +95,9 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
       return;
     }
 
+    final imagenPath = _imagenSeleccionada?.path ?? widget.impresion?.imagen ?? '';
+
+
     final nueva = Impresion(
       id: widget.impresion?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       nombre: nombreCtrl.text,
@@ -100,7 +108,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
       fecha: fechaCtrl.text.isNotEmpty
           ? DateFormat('dd/MM/yyyy').parse(fechaCtrl.text)
           : DateTime.now(),
-      imagen: widget.impresion?.imagen ?? '',
+      imagen: imagenPath,
     );
 
     Navigator.pop(context, nueva);
@@ -142,23 +150,39 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(nombreCtrl, 'Nombre', Icons.title),
-                  _buildDropdownImpresora(),
-                  _buildDropdownFilamento(),
-                  _buildNumberField(pesoCtrl, 'Peso (g)', Icons.scale),
-                  _buildNumberField(tiempoCtrl, 'Tiempo (min)', Icons.timer),
-                  _buildDateField(),
+                  _buildTextField(nombreCtrl, 'Nombre', Icons.title,true),
+                  _buildDropdownImpresora(true),
+                  _buildDropdownFilamento(true),
+                  _buildNumberField(pesoCtrl, 'Peso (g)', Icons.scale,false),
+                  _buildNumberField(tiempoCtrl, 'Tiempo (min)', Icons.timer,false),
+                  _buildDateField(false),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final imagePath = await takePicture();
-                      if (imagePath != null) {
-                        setState(() {
-                          widget.impresion?.imagen = imagePath;
-                        });
-                      }
-                    },
-                    child: const Text('Tomar Foto'),
+                  Column(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          final imagePath = await takePicture();
+                          if (imagePath != null) {
+                            setState(() {
+                              _imagenSeleccionada = File(imagePath);
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.camera_alt),
+                        label: const Text('Tomar Foto'),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_imagenSeleccionada != null)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _imagenSeleccionada!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -169,7 +193,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     );
   }
 
-  Widget _buildDropdownImpresora() {
+  Widget _buildDropdownImpresora(bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: DropdownButtonFormField<Impresora>(
@@ -186,12 +210,13 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
           labelText: 'Impresora',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
-        validator: (value) => value == null ? 'Selecciona una impresora' : null,
+        validator: (value) =>
+        value == null ? 'Selecciona una impresora' : null,
       ),
     );
   }
 
-  Widget _buildDropdownFilamento() {
+  Widget _buildDropdownFilamento(bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: DropdownButtonFormField<Filamento>(
@@ -213,15 +238,15 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     );
   }
 
-  Widget _buildNumberField(TextEditingController ctrl, String label, IconData icon) {
+  Widget _buildNumberField(TextEditingController ctrl, String label, IconData icon, bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: ctrl,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Campo requerido';
-          if (double.tryParse(value) == null) return 'Debe ser un número';
+          if (require && value!.isEmpty) return 'Campo requerido';
+          if (value!.isNotEmpty && double.tryParse(value) == null) return 'Debe ser un número';
           return null;
         },
         decoration: InputDecoration(
@@ -233,14 +258,13 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController ctrl, String label, IconData icon) {
+  Widget _buildTextField(TextEditingController ctrl, String label, IconData icon, bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: ctrl,
-        keyboardType: const TextInputType.numberWithOptions(decimal: true),
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Campo requerido';
+          if ( require && (value == null || value.isEmpty)) return 'Campo requerido';
           return null;
         },
         decoration: InputDecoration(
@@ -252,14 +276,14 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
     );
   }
 
-  Widget _buildDateField() {
+  Widget _buildDateField(bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: fechaCtrl,
         readOnly: true,
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Selecciona la fecha';
+          if (value == null && require) return 'Selecciona la fecha';
           return null;
         },
         decoration: InputDecoration(

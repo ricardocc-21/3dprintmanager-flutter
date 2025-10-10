@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../core/app_colors.dart';
-import '../models/filamento.dart';
+import '../../core/app_colors.dart';
+import '../../models/filamento.dart';
 
 class AddEditFilamentoScreen extends StatefulWidget {
   final Filamento? filamento;
@@ -102,15 +102,15 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(marcaCtrl, 'Marca', Icons.factory),
-                  _buildTextField(materialCtrl, 'Material', Icons.science),
-                  _buildTextField(colorCtrl, 'Color', Icons.color_lens),
-                  _buildNumberField(pesoCtrl, 'Peso (g)', Icons.scale),
-                  _buildNumberField(precioCtrl, 'Precio (€)', Icons.euro),
-                  _buildNumberField(diametroCtrl, 'Diámetro (mm)', Icons.circle),
-                  _buildTextField(enlaceCompraCtrl, 'Enlace de compra', Icons.link),
-                  _buildTextField(enlaceImagenCtrl, 'Enlace de imagen', Icons.image_outlined),
-                  _buildDateField(),
+                  _buildTextField(marcaCtrl, 'Marca', Icons.factory,true),
+                  _buildTextField(materialCtrl, 'Material', Icons.science,true),
+                  _buildTextField(colorCtrl, 'Color', Icons.color_lens,true),
+                  _buildNumberField(pesoCtrl, 'Peso (g)', Icons.scale,false),
+                  _buildNumberField(precioCtrl, 'Precio (€)', Icons.euro,false),
+                  _buildNumberField(diametroCtrl, 'Diámetro (mm)', Icons.circle,false),
+                  _buildTextField(enlaceCompraCtrl, 'Enlace de compra', Icons.link,false),
+                  _buildTextField(enlaceImagenCtrl, 'Enlace de imagen', Icons.image_outlined,false),
+                  _buildDateField(false),
                 ],
               ),
             ),
@@ -120,13 +120,13 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController ctrl, String label, IconData icon) {
+  Widget _buildTextField(TextEditingController ctrl, String label, IconData icon, bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: ctrl,
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Campo requerido';
+          if ( require && (value == null || value.isEmpty)) return 'Campo requerido';
           return null;
         },
         decoration: InputDecoration(
@@ -138,15 +138,15 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
     );
   }
 
-  Widget _buildNumberField(TextEditingController ctrl, String label, IconData icon) {
+  Widget _buildNumberField(TextEditingController ctrl, String label, IconData icon, bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: ctrl,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Campo requerido';
-          if (double.tryParse(value) == null) return 'Debe ser un número';
+          if (require && value!.isEmpty) return 'Campo requerido';
+          if (value!.isNotEmpty && double.tryParse(value) == null) return 'Debe ser un número';
           return null;
         },
         decoration: InputDecoration(
@@ -158,14 +158,14 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
     );
   }
 
-  Widget _buildDateField() {
+  Widget _buildDateField(bool require) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: fechaCompraCtrl,
         readOnly: true,
         validator: (value) {
-          if (value == null || value.isEmpty) return 'Selecciona la fecha';
+          if (value == null && require) return 'Selecciona la fecha';
           return null;
         },
         decoration: InputDecoration(

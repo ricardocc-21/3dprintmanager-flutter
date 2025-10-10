@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:print_manager/core/app_colors.dart';
-import 'package:print_manager/screens/filamentos_screen.dart';
-import 'package:print_manager/screens/impresiones_screen.dart';
-import 'package:print_manager/screens/impresoras_screen.dart';
+import 'package:print_manager/screens/dashboard_screen.dart';
+import 'package:print_manager/screens/filamento/filamentos_screen.dart';
+import 'package:print_manager/screens/impresion/impresiones_screen.dart';
+import 'package:print_manager/screens/impresora/impresoras_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -23,6 +24,7 @@ class _MainAppState extends State<MainApp> {
     const ImpresorasScreen(),
     const ImpresionesScreen(),
     const FilamentosScreen(),
+    const DashboardScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -146,6 +148,11 @@ class _MainAppState extends State<MainApp> {
                 color: Colors.blue,
               ),
               label: "Filamentos",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.auto_graph),
+              activeIcon: Icon(Icons.auto_graph, color: Colors.blue,size: 36),
+              label: "Dashboard",
             ),
           ],
         ),

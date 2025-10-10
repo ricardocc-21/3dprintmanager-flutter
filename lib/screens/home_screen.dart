@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'filamentos_screen.dart';
-import 'impresiones_screen.dart';
-import 'impresoras_screen.dart';
+import 'filamento/filamentos_screen.dart';
+import 'impresion/impresiones_screen.dart';
+import 'impresora/impresoras_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,11 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.print), label: "Impresoras"),
-          BottomNavigationBarItem(icon: Icon(Icons.print), label: "Impresiones"),
-          BottomNavigationBarItem(icon: Icon(Icons.print), label: "Filamentos"),
-        ],
+        items: [],
       ),
     );
   }
