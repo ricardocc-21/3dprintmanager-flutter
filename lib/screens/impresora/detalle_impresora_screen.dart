@@ -17,6 +17,7 @@ const DetalleImpresoraScreen({super.key, required this.impresora});
 
 class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
   List<Reparacion> reparaciones = [];
+  double costeTotal = 0;
 
   @override
   void initState() {
@@ -26,8 +27,14 @@ class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
 
   Future<void> _loadReparaciones() async {
     final data = await DatabaseHelper.instance.getReparacionesImpresora(widget.impresora);
+    double _coste = 0;
+    data.forEach((reparacion) {
+      _coste += reparacion.precio;
+    });
+
     setState(() {
       reparaciones = data;
+      costeTotal = _coste;
     });
   }
 
@@ -145,23 +152,23 @@ class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
             const SizedBox(height: 16),
 
             // 🔧 Información básica
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${widget.impresora.marca} ${widget.impresora.modelo}',
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text('Horas de uso: ${(widget.impresora.horasUso / 60).toInt()}h'),
-                    const SizedBox(height: 4),
-                    Text('Última impresión: 05/10/2025'),
-                  ],
+            SizedBox(
+              width: double.infinity,
+              child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Horas de uso: ${(widget.impresora.horasUso / 60).toInt()}h'),
+                      const SizedBox(height: 4),
+                      Text('Última impresión: calcular'),
+                      const SizedBox(height: 4),
+                      Text('Coste total: ${widget.impresora.precio + costeTotal }€'),
+                    ],
+                  ),
                 ),
               ),
             ),
