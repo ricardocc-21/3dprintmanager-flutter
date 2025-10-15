@@ -6,6 +6,7 @@ class Impresora {
   final String descripcion;
   final DateTime fechaCompra;
   double horasUso;
+  String imagen;
 
   Impresora({
     required this.id,
@@ -15,6 +16,7 @@ class Impresora {
     required this.descripcion,
     required this.fechaCompra,
     required this.horasUso,
+    required this.imagen
   });
 
   factory Impresora.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Impresora {
       descripcion: json['descripcion'],
       fechaCompra: DateTime.parse(json['fecha_compra']),
       horasUso: json['horas_uso'],
+      imagen: json['imagen'],
     );
   }
 
@@ -38,6 +41,7 @@ class Impresora {
       'descripcion': descripcion,
       'fecha_compra': fechaCompra.toIso8601String(), // Guardamos como String
       'horas_uso': horasUso,
+      'imagen': imagen,
     };
   }
 }

@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:print_manager/models/filamento.dart';
 import 'package:print_manager/models/impresion.dart';
 import 'package:print_manager/models/impresora.dart';
+import 'package:print_manager/models/reparacion.dart';
 import 'package:sqflite/sqflite.dart';
 
 
@@ -43,7 +44,8 @@ class DatabaseHelper {
         precio REAL NULL,
         descripcion TEXT,
         fecha_compra TEXT NOT NULL,
-        horas_uso REAL DEFAULT 0
+        horas_uso REAL DEFAULT 0,
+        imagen TEXT NOT NULL
       )
       ''');
     await db.execute('''
@@ -78,9 +80,18 @@ class DatabaseHelper {
         imagen TEXT NOT NULL
       )
     ''');
+    await db.execute('''
+      CREATE TABLE reparaciones (
+        id TEXT PRIMARY KEY,
+        impresoraId TEXT NOT NULL,
+        descripcion TEXT NULL,
+        precio DECIMAL(6,2) NOT NULL,
+        fecha DATE NOT NULL
+        )
+    ''');
     // Impresora
     await db.execute('''
-      INSERT INTO impresoras (id, marca, modelo, precio, descripcion, fecha_compra) VALUES ('1', 'Creality','Ender 3 V2 Neo',200,'Description','2025-10-07 15:42:30.123456')
+      INSERT INTO impresoras (id, marca, modelo, precio, descripcion, fecha_compra,imagen) VALUES ('1', 'Creality','Ender 3 V2 Neo',200,'Description','2025-10-07 15:42:30.123456','assets/images/ender3.png')
     ''');
     // Filamento
     await db.execute('''
@@ -321,5 +332,71 @@ class DatabaseHelper {
     insertFilamento(filamento!);
   }
 
+
+  /***    REPARACIONES    ***/
+  // Insertar o actualizar filamento
+  Future<void> insertReparacion(Reparacion reparacion) async {
+    final db = await instance.database;
+
+    final existing = await db.query(
+      'reparaciones',
+      where: 'id = ?',
+      whereArgs: [reparacion.id],
+    );
+
+    if (existing.isNotEmpty) {
+      // 🔹 Ya existe → actualiza
+      await db.update(
+        'reparaciones',
+        reparacion.toJson(),
+        where: 'id = ?',
+        whereArgs: [reparacion.id],
+      );
+    } else {
+      // 🔹 No existe → inserta
+      await db.insert('reparaciones', reparacion.toJson());
+    }
+  }
+
+
+  // Obtener todas las reparaciones
+  Future<List<Reparacion>> getReparaciones() async {
+    final db = await instance.database;
+    final result = await db.query('reparaciones');
+    return result.map((json) => Reparacion.fromJson(json)).toList();
+  }
+
+  // Obtener todas las reparaciones de una impresora
+  Future<List<Reparacion>> getReparacionesImpresora(Impresora impresora) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'reparaciones',
+      where: 'impresoraId = ?',
+      whereArgs: [impresora.id],
+    );
+    return result.map((json) => Reparacion.fromJson(json)).toList();
+  }
+
+
+  // Obtener un filamento
+  Future<Reparacion?> getReparacion(String id) async {
+    final db = await instance.database;
+    final result = await db.query('reparaciones', where: 'id = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return Reparacion.fromJson(result.first);
+    }
+    return null;
+  }
+
+
+  // Eliminar un filamento
+  Future<int> deleteReparacion(String id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'reparaciones',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 
 }

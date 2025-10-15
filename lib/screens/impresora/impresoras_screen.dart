@@ -3,6 +3,8 @@ import 'package:print_manager/core/app_colors.dart';
 import 'package:print_manager/db/DatabaseHelper.dart';
 import 'package:print_manager/models/impresora.dart';
 
+import 'detalle_impresora_screen.dart';
+
 
 
 class ImpresorasScreen extends StatefulWidget {
@@ -67,6 +69,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                 descripcion: descripcionCtrl.text,
                 fechaCompra: impresora?.fechaCompra ?? DateTime.now(),
                 horasUso: impresora?.horasUso ?? 0,
+                imagen: '/assets/images/ender3.png' //TODO: Añadir imagen
               );
               await DatabaseHelper.instance.insertImpresora(nueva);
               Navigator.pop(context);
@@ -98,6 +101,15 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 3,
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetalleImpresoraScreen(impresora: imp),
+                  ),
+                );
+              },
             child: Row(
               children: [
                 Image.asset(
@@ -179,6 +191,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                 ),
               ],
             ),
+            )
           );
         },
       ),
