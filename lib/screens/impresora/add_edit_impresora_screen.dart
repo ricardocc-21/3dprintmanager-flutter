@@ -5,93 +5,102 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
-import '../../core/app_colors.dart';
-import '../../models/impresora.dart';
-import '../../db/DatabaseHelper.dart';
-import '../../models/reparacion.dart';
+import 'package:print_manager/core/app_colors.dart';
+import 'package:print_manager/db/DatabaseHelper.dart';
+import 'package:print_manager/models/impresora.dart';
 
-class AddEditReparacionScreen extends StatefulWidget {
-  final Reparacion? reparacion;
 
-  const AddEditReparacionScreen({super.key, this.reparacion});
+class AddEditImpresoraScreen extends StatefulWidget {
+  final Impresora? impresora;
+
+  const AddEditImpresoraScreen({super.key, this.impresora});
 
   @override
-  State<AddEditReparacionScreen> createState() => _AddEditReparacionScreenState();
+  State<AddEditImpresoraScreen> createState() => _AddEditImpresoraScreenState();
 }
 
-class _AddEditReparacionScreenState extends State<AddEditReparacionScreen> {
+class _AddEditImpresoraScreenState extends State<AddEditImpresoraScreen> {
   final _formKey = GlobalKey<FormState>();
-  final nombreCtrl = TextEditingController();
+  final marcaCtrl = TextEditingController();
+  final modeloCtrl = TextEditingController();
+  final precioCtrl = TextEditingController();
+  final descripcionCtrl = TextEditingController();
+  final fechaCtrl = TextEditingController();
+  final horasUsoCtrl = TextEditingController();
   final pesoCtrl = TextEditingController();
   final tiempoCtrl = TextEditingController();
-  final fechaCtrl = TextEditingController();
   final picker = ImagePicker();
 
-
-  Impresora? _selectedImpresora;
-  Impresora? _impresora;
-  List<Impresora> _impresoras = [];
   File? _imagenSeleccionada;
 
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    // _loadData();
 
-    if (widget.reparacion != null) {
+    if (widget.impresora != null) {
 
-      final i = widget.reparacion!;
-       _selectedImpresora = _impresora;
-      nombreCtrl.text = i.descripcion;
-      pesoCtrl.text = i.precio.toString();
-
-      fechaCtrl.text = DateFormat('dd/MM/yyyy').format(i.fecha);
+      final i = widget.impresora!;
+      marcaCtrl.text = i.marca;
+      modeloCtrl.text = i.modelo;
+      precioCtrl.text = i.precio.toString();
+      descripcionCtrl.text = i.descripcion;
+      fechaCtrl.text = DateFormat('dd/MM/yyyy').format(i.fechaCompra);
+    }
+    if (widget.impresora != null && widget.impresora!.imagen.isNotEmpty) {
+      _imagenSeleccionada = File(widget.impresora!.imagen);
     }
   }
 
-  Future<void> _loadData() async {
-    final db = DatabaseHelper.instance;
-    final impresoras = await db.getImpresoras();
-
-    Impresora? impresoraSeleccionada;
-
-    // Si estás editando, busca los objetos correspondientes
-    if (widget.reparacion != null) {
-      impresoraSeleccionada = impresoras.firstWhere(
-            (i) => i.id.toString() == widget.reparacion!.impresoraId,
-        orElse: () => impresoras.isNotEmpty ? impresoras.first : null as Impresora,
-      );
-    }
-
-    setState(() {
-      _impresoras = impresoras;
-      _selectedImpresora = impresoraSeleccionada;
-    });
-  }
+  // Future<void> _loadData() async {
+  //   final db = DatabaseHelper.instance;
+  //   final impresoras = await db.getImpresoras();
+  //   final filamentos = await db.getFilamentos();
+  //
+  //   Impresora? impresoraSeleccionada;
+  //   Filamento? filamentoSeleccionado;
+  //
+  //   // Si estás editando, busca los objetos correspondientes
+  //   if (widget.impresora != null) {
+  //     impresoraSeleccionada = impresoras.firstWhere(
+  //           (i) => i.id.toString() == widget.impresora!.impresoraId,
+  //       orElse: () => impresoras.isNotEmpty ? impresoras.first : null as Impresora,
+  //     );
+  //     filamentoSeleccionado = filamentos.firstWhere(
+  //           (f) => f.id.toString() == widget.impresora!.filamentoId,
+  //       orElse: () => filamentos.isNotEmpty ? filamentos.first : null as Filamento,
+  //     );
+  //   }
+  //
+  //   setState(() {
+  //     _impresoras = impresoras;
+  //     _filamentos = filamentos;
+  //     _selectedImpresora = impresoraSeleccionada;
+  //     _selectedFilamento = filamentoSeleccionado;
+  //   });
+  // }
 
   void _guardar() {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedImpresora == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona impresora')),
-      );
-      return;
-    }
+
+    final imagenPath = _imagenSeleccionada?.path ?? widget.impresora?.imagen ?? '';
 
 
-    final nueva = Reparacion(
-      id: widget.reparacion?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      descripcion: nombreCtrl.text,
-      impresoraId: _selectedImpresora!.id.toString(),
-      precio: double.tryParse(pesoCtrl.text) ?? 0,
-      fecha: fechaCtrl.text.isNotEmpty
+    final nueva = Impresora(
+      id: widget.impresora?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+      marca: marcaCtrl.text,
+      modelo: modeloCtrl.text,
+      precio: double.tryParse(precioCtrl.text) ?? 0,
+      descripcion: descripcionCtrl.text,
+      horasUso: double.tryParse(horasUsoCtrl.text) ?? 0,
+      fechaCompra: fechaCtrl.text.isNotEmpty
           ? DateFormat('dd/MM/yyyy').parse(fechaCtrl.text)
-          : DateTime.now()
+          : DateTime.now(),
+      imagen: imagenPath,
     );
 
     Navigator.pop(context, nueva);
-    DatabaseHelper.instance.calcularHoras(nueva.impresoraId);
 
   }
 
@@ -99,7 +108,7 @@ class _AddEditReparacionScreenState extends State<AddEditReparacionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.reparacion == null ? 'Añadir Impresión' : 'Editar Impresión'),
+        title: Text(widget.impresora == null ? 'Añadir Impresora' : 'Editar Impresora'),
         // backgroundColor: AppColors.backgroundComponent,
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -120,7 +129,7 @@ class _AddEditReparacionScreenState extends State<AddEditReparacionScreen> {
               child: Column(
                 children: [
                   const Text(
-                    "Datos de la Impresión",
+                    "Datos de la Impresora",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -128,10 +137,11 @@ class _AddEditReparacionScreenState extends State<AddEditReparacionScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(nombreCtrl, 'Nombre', Icons.title,true),
-                  _buildDropdownImpresora(true),
-                  _buildNumberField(pesoCtrl, 'Peso (g)', Icons.scale,false),
-                  _buildNumberField(tiempoCtrl, 'Tiempo (min)', Icons.timer,false),
+                  _buildTextField(marcaCtrl, 'Marca', Icons.title,true),
+                  _buildTextField(modeloCtrl, 'Modelo', Icons.title,true),
+                  _buildNumberField(precioCtrl, 'Precio', Icons.euro,false),
+                  _buildTextField(descripcionCtrl, 'Descripción', Icons.description,false),
+                  _buildNumberField(horasUsoCtrl, 'Horas de uso', Icons.timer,false),
                   _buildDateField(false),
                   const SizedBox(height: 20),
                   Column(
@@ -169,30 +179,6 @@ class _AddEditReparacionScreenState extends State<AddEditReparacionScreen> {
       ),
     );
   }
-
-  Widget _buildDropdownImpresora(bool require) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: DropdownButtonFormField<Impresora>(
-        value: _selectedImpresora,
-        items: _impresoras.map((i) {
-          return DropdownMenuItem(
-            value: i,
-            child: Text(i.marca),
-          );
-        }).toList(),
-        onChanged: (value) => setState(() => _selectedImpresora = value),
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.print, color: AppColors.secondary),
-          labelText: 'Impresora',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        validator: (value) =>
-        value == null ? 'Selecciona una impresora' : null,
-      ),
-    );
-  }
-
 
   Widget _buildNumberField(TextEditingController ctrl, String label, IconData icon, bool require) {
     return Padding(
@@ -233,6 +219,10 @@ class _AddEditReparacionScreenState extends State<AddEditReparacionScreen> {
   }
 
   Widget _buildDateField(bool require) {
+    if (fechaCtrl.text.isEmpty) {
+      fechaCtrl.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(

@@ -67,16 +67,16 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                   child: Row(
                     children: [
                       Expanded(
+                        flex: 1,
                         child: Image.network(
                           f.enlace_imagen,
-                          height: 140,
-                          width: 140,
                           fit: BoxFit.cover,
                         ),
                       ),
                       Expanded(
+                        flex: 2,
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(8),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +136,7 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 6),
                               Text(
                                 f.material.toUpperCase(),
                                 style: TextStyle(
@@ -152,7 +152,7 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                                   fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 4),
                               Text(
                                 'Disponible: ${f.restante}g',
                                 style: TextStyle(
@@ -160,7 +160,7 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                                   fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 4),
                               LinearProgressIndicator(
                                 value: (100 - f.porcentaje_usado)/ 100,
                                 // Convierte a 0–1

@@ -372,6 +372,7 @@ class DatabaseHelper {
     final result = await db.query(
       'reparaciones',
       where: 'impresoraId = ?',
+      orderBy: 'fecha DESC',
       whereArgs: [impresora.id],
     );
     return result.map((json) => Reparacion.fromJson(json)).toList();

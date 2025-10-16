@@ -3,6 +3,7 @@ import 'package:print_manager/core/app_colors.dart';
 import 'package:print_manager/db/DatabaseHelper.dart';
 import 'package:print_manager/models/impresora.dart';
 
+import 'add_edit_impresora_screen.dart';
 import 'detalle_impresora_screen.dart';
 
 
@@ -30,57 +31,70 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
     });
   }
 
-  Future<void> _addOrEditImpresora({Impresora? impresora}) async {
-    final TextEditingController marcaCtrl =
-    TextEditingController(text: impresora?.marca ?? '');
-    final TextEditingController modeloCtrl =
-    TextEditingController(text: impresora?.modelo ?? '');
-    final TextEditingController precioCtrl =
-    TextEditingController(text: impresora?.precio.toString() ?? '');
-    final TextEditingController descripcionCtrl =
-    TextEditingController(text: impresora?.descripcion ?? '');
-
-    await showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(impresora == null ? "Añadir impresora" : "Editar impresora"),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: marcaCtrl, decoration: const InputDecoration(labelText: "Marca")),
-              TextField(controller: modeloCtrl, decoration: const InputDecoration(labelText: "Modelo")),
-              TextField(controller: precioCtrl, decoration: const InputDecoration(labelText: "Precio"), keyboardType: TextInputType.number),
-              TextField(controller: descripcionCtrl, decoration: const InputDecoration(labelText: "Descripción")),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancelar"),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final nueva = Impresora(
-                id: impresora?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-                marca: marcaCtrl.text,
-                modelo: modeloCtrl.text,
-                precio: double.tryParse(precioCtrl.text) ?? 0,
-                descripcion: descripcionCtrl.text,
-                fechaCompra: impresora?.fechaCompra ?? DateTime.now(),
-                horasUso: impresora?.horasUso ?? 0,
-                imagen: '/assets/images/ender3.png' //TODO: Añadir imagen
-              );
-              await DatabaseHelper.instance.insertImpresora(nueva);
-              Navigator.pop(context);
-              _loadImpresoras();
-            },
-            child: const Text("Guardar"),
-          ),
-        ],
-      ),
+  void _goToAddImpresora([Impresora? impresora]) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => AddEditImpresoraScreen(impresora: impresora)),
     );
+    if (result != null) {
+      await DatabaseHelper.instance.insertImpresora(result);
+      _loadImpresoras();
+    }
   }
+
+
+
+  // Future<void> _addOrEditImpresora({Impresora? impresora}) async {
+  //   final TextEditingController marcaCtrl =
+  //   TextEditingController(text: impresora?.marca ?? '');
+  //   final TextEditingController modeloCtrl =
+  //   TextEditingController(text: impresora?.modelo ?? '');
+  //   final TextEditingController precioCtrl =
+  //   TextEditingController(text: impresora?.precio.toString() ?? '');
+  //   final TextEditingController descripcionCtrl =
+  //   TextEditingController(text: impresora?.descripcion ?? '');
+  //
+  //   await showDialog(
+  //     context: context,
+  //     builder: (_) => AlertDialog(
+  //       title: Text(impresora == null ? "Añadir impresora" : "Editar impresora"),
+  //       content: SingleChildScrollView(
+  //         child: Column(
+  //           children: [
+  //             TextField(controller: marcaCtrl, decoration: const InputDecoration(labelText: "Marca")),
+  //             TextField(controller: modeloCtrl, decoration: const InputDecoration(labelText: "Modelo")),
+  //             TextField(controller: precioCtrl, decoration: const InputDecoration(labelText: "Precio"), keyboardType: TextInputType.number),
+  //             TextField(controller: descripcionCtrl, decoration: const InputDecoration(labelText: "Descripción")),
+  //           ],
+  //         ),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: const Text("Cancelar"),
+  //         ),
+  //         ElevatedButton(
+  //           onPressed: () async {
+  //             final nueva = Impresora(
+  //               id: impresora?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+  //               marca: marcaCtrl.text,
+  //               modelo: modeloCtrl.text,
+  //               precio: double.tryParse(precioCtrl.text) ?? 0,
+  //               descripcion: descripcionCtrl.text,
+  //               fechaCompra: impresora?.fechaCompra ?? DateTime.now(),
+  //               horasUso: impresora?.horasUso ?? 0,
+  //               imagen: '/assets/images/ender3.png' //TODO: Añadir imagen
+  //             );
+  //             await DatabaseHelper.instance.insertImpresora(nueva);
+  //             Navigator.pop(context);
+  //             _loadImpresoras();
+  //           },
+  //           child: const Text("Guardar"),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Future<void> _deleteImpresora(String id) async {
     await DatabaseHelper.instance.deleteImpresora(id);
@@ -143,7 +157,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                               icon: const Icon(Icons.more_vert),
                               onSelected: (value) {
                                 if (value == 'edit') {
-                                  _addOrEditImpresora(); // tu metodo
+                                  _goToAddImpresora(imp); // tu metodo
                                 } else if (value == 'delete') {
                                   _deleteImpresora(imp.id); // tu metodo
                                 }
@@ -196,7 +210,7 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _addOrEditImpresora(),
+        onPressed: () => _goToAddImpresora(),
         backgroundColor: AppColors.secondary,
         shape: const CircleBorder(), // asegura que sea circular
         mini: false,
