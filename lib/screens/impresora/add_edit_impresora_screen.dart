@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
 import 'package:print_manager/core/app_colors.dart';
-import 'package:print_manager/db/DatabaseHelper.dart';
 import 'package:print_manager/models/impresora.dart';
 
 

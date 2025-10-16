@@ -200,7 +200,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
         items: _impresoras.map((i) {
           return DropdownMenuItem(
             value: i,
-            child: Text(i.marca),
+            child: Text("${i.marca} ${i.modelo}"),
           );
         }).toList(),
         onChanged: (value) => setState(() => _selectedImpresora = value),
@@ -223,7 +223,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
         items: _filamentos.map((f) {
           return DropdownMenuItem(
             value: f,
-            child: Text("${f.marca} (${f.material})"),
+            child: Text("${f.marca} ${f.color} (${f.material}) - ${100 - f.porcentaje_usado}%"),
           );
         }).toList(),
         onChanged: (value) => setState(() => _selectedFilamento = value),
