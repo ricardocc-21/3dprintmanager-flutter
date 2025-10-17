@@ -45,6 +45,13 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
     }
   }
 
+  void _marcarDisponible(Filamento filamento) async {
+    filamento.disponible == 1 ? filamento.disponible = 0 : filamento.disponible = 1;
+    await DatabaseHelper.instance.insertFilamento(filamento);
+    _loadFilamentos();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,132 +61,147 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
               itemCount: filamentos.length,
               itemBuilder: (context, index) {
                 final f = filamentos[index];
-                return Card(
-                  clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 3,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Image.network(
-                          f.enlace_imagen,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      '${f.marca} ${f.color}',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.clip,
-                                      maxLines: 1,
-                                    ),
-                                  ),
-                                  PopupMenuButton<String>(
-                                    icon: const Icon(Icons.more_vert),
-                                    onSelected: (value) {
-                                      if (value == 'edit') {
-                                        _goToAddFilamento(f); // tu metodo
-                                      } else if (value == 'delete') {
-                                        _deleteFilamento(f.id); // tu metodo
-                                      }
-                                    },
-                                    itemBuilder: (context) => [
-                                      const PopupMenuItem(
-                                        value: 'edit',
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.edit,
-                                              color: Colors.blue,
-                                            ),
-                                            SizedBox(width: 8),
-                                            Text('Editar'),
-                                          ],
-                                        ),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: 'delete',
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(width: 8),
-                                            Text('Eliminar'),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                f.material.toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${f.precio_kg}€/kg',
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Disponible: ${f.restante}g',
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              LinearProgressIndicator(
-                                value: (100 - f.porcentaje_usado)/ 100,
-                                // Convierte a 0–1
-                                minHeight: 10,
-                                backgroundColor: Colors.grey[300],
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  100 - f.porcentaje_usado > 60
-                                      ? Colors.green
-                                      : 100 - f.porcentaje_usado < 25
-                                      ? Colors.red
-                                      : Colors.orange,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ],
+                return Opacity(
+                  opacity: f.disponible == 0 ? 0.5 : 1.0, // 50% transparente si no disponible
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 3,
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Image.network(
+                            f.enlace_imagen,
+                            fit: BoxFit.cover,
+                            color: f.disponible == 0 ? Colors.grey : null, // atenuar la imagen
+                            colorBlendMode: f.disponible == 0 ? BlendMode.saturation : null,
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        '${f.marca} ${f.color}',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: f.disponible == 0 ? Colors.grey : Colors.black,
+                                        ),
+                                        overflow: TextOverflow.clip,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                    PopupMenuButton<String>(
+                                      icon: const Icon(Icons.more_vert),
+                                      onSelected: (value) {
+                                        if (value == 'disponible') {
+                                          _marcarDisponible(f);
+                                        } else if (value == 'edit') {
+                                          _goToAddFilamento(f);
+                                        } else if (value == 'delete') {
+                                          _deleteFilamento(f.id);
+                                        }
+                                      },
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          value: 'disponible',
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.airplanemode_active,
+                                                color: Colors.blue,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(f.disponible == 1 ? 'Disponible' : 'No disponible'),
+                                            ],
+                                          ),
+                                        ),
+                                        const PopupMenuItem(
+                                          value: 'edit',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.edit, color: Colors.blue),
+                                              SizedBox(width: 8),
+                                              Text('Editar'),
+                                            ],
+                                          ),
+                                        ),
+                                        const PopupMenuItem(
+                                          value: 'delete',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.delete, color: Colors.red),
+                                              SizedBox(width: 8),
+                                              Text('Eliminar'),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  f.material.toUpperCase(),
+                                  style: TextStyle(
+                                    color: f.disponible == 0 ? Colors.grey : Colors.grey[700],
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${f.precio_kg}€/kg',
+                                  style: TextStyle(
+                                    color: f.disponible == 0 ? Colors.grey : Colors.grey[700],
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Disponible: ${f.restante}g',
+                                  style: TextStyle(
+                                    color: f.disponible == 0 ? Colors.grey : Colors.grey[700],
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                LinearProgressIndicator(
+                                  value: (100 - f.porcentaje_usado) / 100,
+                                  minHeight: 10,
+                                  backgroundColor: Colors.grey[300],
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    f.disponible == 0
+                                        ? Colors.grey
+                                        : 100 - f.porcentaje_usado > 60
+                                        ? Colors.green
+                                        : 100 - f.porcentaje_usado < 25
+                                        ? Colors.red
+                                        : Colors.orange,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

@@ -13,7 +13,7 @@ class Filamento {
   final String enlace_imagen;
   double usado;
   double restante;
-  final double disponible;
+  int disponible;
   double porcentaje_usado;
 
 

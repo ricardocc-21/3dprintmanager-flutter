@@ -64,7 +64,7 @@ class DatabaseHelper {
         enlace_imagen TEXT,
         usado REAL DEFAULT 0,
         restante REAL DEFAULT 0,
-        disponible REAL DEFAULT 0,
+        disponible INTEGER DEFAULT 1,
         porcentaje_usado REAL DEFAULT 0
       )
       ''');
