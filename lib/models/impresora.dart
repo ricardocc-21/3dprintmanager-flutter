@@ -1,3 +1,7 @@
+import 'package:print_manager/db/DatabaseHelper.dart';
+
+import 'impresion.dart';
+
 class Impresora {
   final String id;
   final String marca;
@@ -44,4 +48,28 @@ class Impresora {
       'imagen': imagen,
     };
   }
+
+
+  Future<String> getFechaUltimaImpresion() async {
+    final DateTime fechaActual = DateTime.now();
+    final Impresion impresion = await DatabaseHelper.instance.getUltimaImpresion(this);
+    final DateTime fechaImpresion = impresion.fecha;
+    final Duration diferencia = fechaActual.difference(fechaImpresion);
+    final int dias = diferencia.inDays;
+    final int horas = diferencia.inHours % 24;
+    final int minutos = diferencia.inMinutes % 60;
+    final int segundos = diferencia.inSeconds % 60;
+
+    if (dias > 0) {
+      return '$dias días';
+    } else if (horas > 0) {
+      return '$horas horas y $minutos minutos';
+    } else if (minutos > 0) {
+      return '$minutos minutos y $segundos segundos';
+    } else {
+      return '$segundos segundos';
+    }
+  }
+
 }
+

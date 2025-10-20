@@ -17,6 +17,7 @@ class DetalleImpresoraScreen extends StatefulWidget {
 class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
   List<Reparacion> reparaciones = [];
   double costeTotal = 0;
+  String fechaUltimaImpresion = '';
 
   @override
   void initState() {
@@ -32,10 +33,12 @@ class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
     data.forEach((reparacion) {
       _coste += reparacion.precio;
     });
+    String _fecha = await widget.impresora.getFechaUltimaImpresion();
 
     setState(() {
       reparaciones = data;
       costeTotal = _coste;
+      fechaUltimaImpresion =_fecha;
     });
   }
 
@@ -172,7 +175,7 @@ class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
                         'Horas de uso: ${(widget.impresora.horasUso / 60).toInt()}h',
                       ),
                       const SizedBox(height: 4),
-                      Text('Última impresión: calcular'),
+                      Text('Última impresión: $fechaUltimaImpresion'),
                       const SizedBox(height: 4),
                       Text(
                         'Coste total: ${widget.impresora.precio + costeTotal}€',

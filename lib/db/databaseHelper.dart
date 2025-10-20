@@ -179,6 +179,31 @@ class DatabaseHelper {
     insertImpresora(impresora!);
   }
 
+  Future<List<Impresion>> getImpresionesByImpresora(Impresora impresora) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'impresiones',
+      where: 'impresoraId = ?',
+      orderBy: 'fecha DESC',
+      whereArgs: [impresora.id],
+    );
+
+    return result.map((json) => Impresion.fromJson(json)).toList();
+  }
+
+  Future<Impresion> getUltimaImpresion(Impresora impresora) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'impresiones',
+      where: 'impresoraId = ?',
+      orderBy: 'fecha DESC',
+      limit: 1,
+      whereArgs: [impresora.id],
+    );
+
+    return Impresion.fromJson(result.first);
+  }
+
   /***    IMPRESIONES    ***/
 
   // Insertar impresion

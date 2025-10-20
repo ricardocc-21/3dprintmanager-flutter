@@ -189,8 +189,6 @@ class _ImpresorasScreenState extends State<ImpresorasScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text('Horas totales: ${(imp.horasUso/60).toInt()}h', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
-                        const SizedBox(height: 4),
-                        Text('Última impresión: 05/10/2025', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
                         const SizedBox(height: 12),
                         Row(
                           children: [
