@@ -223,7 +223,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
         items: _filamentos.map((f) {
           return DropdownMenuItem(
             value: f,
-            child: Text("${f.marca} ${f.color} (${f.material}) - ${100 - f.porcentaje_usado}%"),
+            child: Text("${f.marca} ${f.color} (${f.material})  ${(100 - f.porcentaje_usado).toStringAsFixed(2)}%"),
           );
         }).toList(),
         onChanged: (value) => setState(() => _selectedFilamento = value),

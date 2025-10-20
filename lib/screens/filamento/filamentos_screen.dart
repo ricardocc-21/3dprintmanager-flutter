@@ -123,12 +123,14 @@ class _FilamentosScreenState extends State<FilamentosScreen> {
                                           value: 'disponible',
                                           child: Row(
                                             children: [
-                                              const Icon(
-                                                Icons.airplanemode_active,
-                                                color: Colors.blue,
-                                              ),
+
+                                              if (f.disponible == 0)
+                                                const Icon(Icons.check_circle, color: Colors.green)
+                                              else
+                                                const Icon(Icons.close_rounded, color: Colors.red),
+
                                               const SizedBox(width: 8),
-                                              Text(f.disponible == 1 ? 'Disponible' : 'No disponible'),
+                                              Text(f.disponible == 0 ? 'Disponible' : 'No disponible'),
                                             ],
                                           ),
                                         ),

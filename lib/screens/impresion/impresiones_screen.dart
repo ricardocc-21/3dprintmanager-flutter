@@ -145,7 +145,6 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
                             const SizedBox(width: 6),
                             const Icon(Icons.scale, color: Colors.blue, size: 20),
                             Text('${i.peso} g', style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.w600)),
-
                           ],
                         ),
                       ],
