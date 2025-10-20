@@ -64,8 +64,9 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 3,
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (i.imagen.isNotEmpty)
                 Image.file(
@@ -77,7 +78,7 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
 
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.only(left: 16.0,top:4.0,right:4.0,bottom: 4.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,14 +132,20 @@ class _ImpresionesScreenState extends State<ImpresionesScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
                         Text('${f.color} (${f.marca})', style: TextStyle(color: Colors.grey[700], fontSize: 16)),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
+                            Text('${(i.peso/1000 * f.precio_kg).toStringAsFixed(2)}€', style: TextStyle(color: Colors.green, fontSize: 16, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 8),
+
                         Row(
                           children: [
                             const Icon(Icons.access_time, color: Colors.blue, size: 20),
                             const SizedBox(width: 6),
                             Text('${i.tiempo.inMinutes} min', style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.w600)),
+                            const SizedBox(width: 6),
+                            const Icon(Icons.scale, color: Colors.blue, size: 20),
+                            Text('${i.peso} g', style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.w600)),
+
                           ],
                         ),
                       ],
