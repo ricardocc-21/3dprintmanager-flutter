@@ -60,7 +60,7 @@ class _AddEditImpresionScreenState extends State<AddEditImpresionScreen> {
   Future<void> _loadData() async {
     final db = DatabaseHelper.instance;
     final impresoras = await db.getImpresoras();
-    final filamentos = await db.getFilamentos();
+    final filamentos = await db.getFilamentosDisponibles();
 
     Impresora? impresoraSeleccionada;
     Filamento? filamentoSeleccionado;

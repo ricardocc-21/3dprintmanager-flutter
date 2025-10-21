@@ -53,7 +53,7 @@ class _AddEditFilamentoScreenState extends State<AddEditFilamentoScreen> {
       peso: double.tryParse(pesoCtrl.text) ?? 0,
       precio: double.tryParse(precioCtrl.text) ?? 0,
       diametro: double.tryParse(diametroCtrl.text) ?? 0,
-      disponible: 1,
+      disponible: widget.filamento?.disponible ?? 1,
       enlace_compra: enlaceCompraCtrl.text,
       enlace_imagen: enlaceImagenCtrl.text,
       fecha_compra: fechaCompraCtrl.text.isNotEmpty
