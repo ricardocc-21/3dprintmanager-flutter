@@ -185,12 +185,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     final sections = _filamentoPorColor.entries.map((e) {
-        return PieChartSectionData(
-          title: e.key,
-          value: e.value,
-          radius: 60,
-        );
-      }).toList();
+      final colorName = e.key.toLowerCase();
+
+      Color color;
+      if (colorName.contains('blanco')) {
+        color = Colors.white;
+      } else if (colorName.contains('negro')) {
+        color = Colors.black;
+      } else if (colorName.contains('azul')) {
+        color = Colors.blue;
+      } else if (colorName.contains('rojo')) {
+        color = Colors.red;
+      } else if (colorName.contains('verde')) {
+        color = Colors.green;
+      } else if (colorName.contains('amarillo')) {
+        color = Colors.yellow;
+      } else if (colorName.contains('gris')) {
+        color = Colors.grey;
+      } else if (colorName.contains('naranja')) {
+        color = Colors.orange;
+      } else if (colorName.contains('morado') || colorName.contains('violeta')) {
+        color = Colors.purple;
+      } else if (colorName.contains('rosa')) {
+        color = Colors.pink;
+      } else {
+        color = Colors.brown; // color por defecto
+      }
+
+      return PieChartSectionData(
+        color: color,
+        title: e.key,
+        titleStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+        ),        value: e.value,
+        radius: 60,
+        borderSide: BorderSide(color: Colors.black, width: 1)
+      );
+    }).toList();
 
     return Card(
       elevation: 4,
