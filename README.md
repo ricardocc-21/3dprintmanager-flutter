@@ -1,16 +1,41 @@
-# print_manager
+# 3D Print Manager - Flutter App
 
-A new Flutter project.
+Una aplicación Flutter para gestionar impresoras 3D, filamentos, impresiones y reparaciones. Permite registrar impresoras, controlar inventario de filamentos, planificar y almacenar impresiones, y llevar el historial de reparaciones de cada impresora.  
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📦 Características
 
-A few resources to get you started if this is your first Flutter project:
+- Gestión de **impresoras 3D**: registrar, editar y eliminar impresoras.  
+- Control de **filamentos**: registrar materiales, colores y stock disponible.  
+- Registro de **impresiones**: almacenar detalles de cada impresión, peso de filamento usado, duración y relación con impresora y filamento.  
+- Historial de **reparaciones**: registrar reparaciones realizadas en cada impresora, indicando su coste y fecha.
+- Funcionalidad **offline** mediante SQLite local.
+- Integración con cámara para fotos de impresiones.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tecnologías
+
+- **Flutter**: desarrollo multiplataforma (iOS y Android).  
+- **SQLite (sqflite)**: almacenamiento local.  
+
+---
+
+## 📁 Estructura del proyecto
+````bash
+lib/
+├─ models/ # Modelos de datos: Impresora, Filamento, Impresion, Reparacion
+├─ screens/ # Pantallas de la app
+├─ widgets/ # Componentes reutilizables
+└─ main.dart # Punto de entrada de la app
+assets/
+└─ images/ # Imágenes y logos
+````
+
+---
+
+## ⚡ Instalación
+
+- Proximamente subiré una version 'apk' y otra 'ipa'
+
