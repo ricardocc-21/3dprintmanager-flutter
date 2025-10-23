@@ -175,7 +175,7 @@ class _DetalleImpresoraScreenState extends State<DetalleImpresoraScreen> {
                         'Horas de uso: ${(widget.impresora.horasUso / 60).toInt()}h',
                       ),
                       const SizedBox(height: 4),
-                      Text('Última impresión: $fechaUltimaImpresion'),
+                      Text('Última impresión: hace $fechaUltimaImpresion'),
                       const SizedBox(height: 4),
                       Text(
                         'Coste total: ${widget.impresora.precio + costeTotal}€',

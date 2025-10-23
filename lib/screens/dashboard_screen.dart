@@ -40,8 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Agrupar por material (puedes adaptar según tus datos)
       final filamento = await db.getFilamento(imp.filamentoId);
       if (filamento != null) {
-        porColor[filamento.color] =
-            (porColor[filamento.color] ?? 0) + imp.peso;
+        porColor[filamento.color] = (porColor[filamento.color] ?? 0) + imp.peso;
       }
     }
 
@@ -143,14 +142,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   alignment: BarChartAlignment.spaceAround,
                   titlesData: FlTitlesData(
                     leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true, reservedSize: 28),
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 28,
+                      ),
                     ),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
-                          if (index < 0 || index >= meses.length) return const Text('');
+                          if (index < 0 || index >= meses.length)
+                            return const Text('');
                           return Text(meses[index]);
                         },
                       ),
@@ -204,7 +207,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         color = Colors.grey;
       } else if (colorName.contains('naranja')) {
         color = Colors.orange;
-      } else if (colorName.contains('morado') || colorName.contains('violeta')) {
+      } else if (colorName.contains('morado') ||
+          colorName.contains('violeta')) {
         color = Colors.purple;
       } else if (colorName.contains('rosa')) {
         color = Colors.pink;
@@ -220,9 +224,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           color: ThemeData.estimateBrightnessForColor(color) == Brightness.dark
               ? Colors.white
               : Colors.black,
-        ),        value: e.value,
+        ),
+        value: e.value,
         radius: 60,
-        borderSide: BorderSide(color: Colors.black, width: 1)
+        borderSide: BorderSide(color: Colors.black, width: 1),
       );
     }).toList();
 
@@ -240,11 +245,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 20),
             SizedBox(
               height: 250,
-              child: PieChart(PieChartData(
-                sections: sections,
-                sectionsSpace: 2,
-                centerSpaceRadius: 40,
-              )),
+              child: PieChart(
+                PieChartData(
+                  sections: sections,
+                  sectionsSpace: 5,
+                  centerSpaceRadius: 40,
+                ),
+              ),
             ),
           ],
         ),

@@ -320,6 +320,7 @@ class DatabaseHelper {
     return result.map((json) => Filamento.fromJson(json)).toList();
   }
 
+  // Obtener todos los filamentos disponibles
   Future<List<Filamento>> getFilamentosDisponibles() async {
     final db = await instance.database;
     final result = await db.query(
